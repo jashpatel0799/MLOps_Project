@@ -1,1 +1,1 @@
-## End To End CI/CD Project in Machine Learning
+## End To End Machine Learning Project With CI/CD
