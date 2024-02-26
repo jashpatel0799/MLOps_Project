@@ -8,6 +8,7 @@ from os.path import abspath, dirname
 sys.path.append(abspath(dirname(dirname("MLOps_Project"))))
 
 from src.exception import CustomException
+from sklearn.model_selection import GridSearchCV
 
 def save_object(file_path, obj):
     try:
@@ -22,7 +23,7 @@ def save_object(file_path, obj):
         raise CustomException(e, sys)
 
 
-def evaluate_model(x_train, y_train, x_test, y_test, r2_score, models):
+def evaluate_model(x_train, y_train, x_test, y_test, r2_score, models, params):
     try:
         
         report = {}
@@ -30,8 +31,15 @@ def evaluate_model(x_train, y_train, x_test, y_test, r2_score, models):
         for i in range(len(list(models))):
             
             model = list(models.values())[i]
+            para = params[list(models.keys())[i]]
+
+            gs = GridSearchCV(model, para, cv=3)
+            gs.fit(x_train,y_train)
             
-            model.fit(x_train, y_train)
+            model.set_params(**gs.best_params_)
+            model.fit(x_train,y_train)
+            
+            # model.fit(x_train, y_train)
             
             y_train_pred = model.predict(x_train)
             
